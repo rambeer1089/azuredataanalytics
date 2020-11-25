@@ -1,0 +1,18 @@
+{
+	"name": "dlsfolderproviderfunction",
+	"properties": {
+		"annotations": [],
+		"type": "AzureFunction",
+		"typeProperties": {
+			"functionAppUrl": "https://azureproviderdlstargetprovider.azurewebsites.net",
+			"functionKey": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "azuretrainingkeyvault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "functionkay"
+			}
+		}
+	}
+}
