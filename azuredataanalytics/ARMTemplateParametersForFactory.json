@@ -8,8 +8,17 @@
 		"azuretrainingdatabase_connectionString": {
 			"value": ""
 		},
+		"organizeddlsconnection_accountKey": {
+			"value": ""
+		},
 		"azuretrainingkeyvault_properties_typeProperties_baseUrl": {
 			"value": "https://azuredataanalytics.vault.azure.net/"
+		},
+		"dlsfolderproviderfunction_properties_typeProperties_functionAppUrl": {
+			"value": "https://azureproviderdlstargetprovider.azurewebsites.net"
+		},
+		"organizeddlsconnection_properties_typeProperties_url": {
+			"value": "https://azuretrainingdls.dfs.core.windows.net"
 		}
 	}
 }

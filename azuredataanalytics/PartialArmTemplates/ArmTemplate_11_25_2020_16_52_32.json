@@ -6,68 +6,12 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "azuredataanalytics"
-		},
-		"azuretrainingdatabase_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'azuretrainingdatabase'"
-		},
-		"organizeddlsconnection_accountKey": {
-			"type": "secureString",
-			"metadata": "Secure string for 'accountKey' of 'organizeddlsconnection'"
-		},
-		"azuretrainingkeyvault_properties_typeProperties_baseUrl": {
-			"type": "string",
-			"defaultValue": "https://azuredataanalytics.vault.azure.net/"
-		},
-		"dlsfolderproviderfunction_properties_typeProperties_functionAppUrl": {
-			"type": "string",
-			"defaultValue": "https://azureproviderdlstargetprovider.azurewebsites.net"
-		},
-		"organizeddlsconnection_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://azuretrainingdls.dfs.core.windows.net"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
-		{
-			"name": "[concat(parameters('factoryName'), '/azuretrainingkeyvault')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureKeyVault",
-				"typeProperties": {
-					"baseUrl": "[parameters('azuretrainingkeyvault_properties_typeProperties_baseUrl')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/azuretrainingdatabase')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureSqlDatabase",
-				"typeProperties": {
-					"connectionString": "[parameters('azuretrainingdatabase_connectionString')]",
-					"password": {
-						"type": "AzureKeyVaultSecret",
-						"store": {
-							"referenceName": "azuretrainingkeyvault",
-							"type": "LinkedServiceReference"
-						},
-						"secretName": "sqlpassword"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/azuretrainingkeyvault')]"
-			]
-		},
 		{
 			"name": "[concat(parameters('factoryName'), '/blobmetadata')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
@@ -148,9 +92,7 @@
 					"table": "BlobMetadata"
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/azuretrainingdatabase')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/orderblobprocessor')]",
@@ -179,8 +121,7 @@
 							},
 							"dataset": {
 								"referenceName": "blobmetadata",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							},
 							"firstRowOnly": false
 						}
@@ -253,7 +194,7 @@
 				"annotations": [],
 				"type": "AzureFunction",
 				"typeProperties": {
-					"functionAppUrl": "[parameters('dlsfolderproviderfunction_properties_typeProperties_functionAppUrl')]",
+					"functionAppUrl": "https://azureproviderdlstargetprovider.azurewebsites.net",
 					"functionKey": {
 						"type": "AzureKeyVaultSecret",
 						"store": {
@@ -264,9 +205,7 @@
 					}
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/azuretrainingkeyvault')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/organizeddlsconnection')]",
@@ -276,10 +215,10 @@
 				"annotations": [],
 				"type": "AzureBlobFS",
 				"typeProperties": {
-					"url": "[parameters('organizeddlsconnection_properties_typeProperties_url')]",
+					"url": "https://azuretrainingdls.dfs.core.windows.net",
 					"accountKey": {
 						"type": "SecureString",
-						"value": "[parameters('organizeddlsconnection_accountKey')]"
+						"value": "**********"
 					}
 				}
 			},

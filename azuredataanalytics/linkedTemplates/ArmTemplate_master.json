@@ -11,9 +11,21 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'azuretrainingdatabase'"
 		},
+		"organizeddlsconnection_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'organizeddlsconnection'"
+		},
 		"azuretrainingkeyvault_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://azuredataanalytics.vault.azure.net/"
+		},
+		"dlsfolderproviderfunction_properties_typeProperties_functionAppUrl": {
+			"type": "string",
+			"defaultValue": "https://azureproviderdlstargetprovider.azurewebsites.net"
+		},
+		"organizeddlsconnection_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://azuretrainingdls.dfs.core.windows.net"
 		},
 		"containerUri": {
 			"type": "string",
@@ -42,11 +54,20 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"organizeddlsconnection_accountKey": {
+						"value": "[parameters('organizeddlsconnection_accountKey')]"
+					},
 					"azuretrainingdatabase_connectionString": {
 						"value": "[parameters('azuretrainingdatabase_connectionString')]"
 					},
 					"azuretrainingkeyvault_properties_typeProperties_baseUrl": {
 						"value": "[parameters('azuretrainingkeyvault_properties_typeProperties_baseUrl')]"
+					},
+					"organizeddlsconnection_properties_typeProperties_url": {
+						"value": "[parameters('organizeddlsconnection_properties_typeProperties_url')]"
+					},
+					"dlsfolderproviderfunction_properties_typeProperties_functionAppUrl": {
+						"value": "[parameters('dlsfolderproviderfunction_properties_typeProperties_functionAppUrl')]"
 					}
 				}
 			},
