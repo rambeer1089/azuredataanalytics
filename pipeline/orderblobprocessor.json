@@ -48,7 +48,7 @@
 					"isSequential": true,
 					"activities": [
 						{
-							"name": "prepare dls traget foler",
+							"name": "prepare dls traget folder",
 							"type": "AzureFunctionActivity",
 							"dependsOn": [],
 							"policy": {
@@ -77,11 +77,11 @@
 							}
 						},
 						{
-							"name": "Copy data1",
+							"name": "Copy blob storage to dls",
 							"type": "Copy",
 							"dependsOn": [
 								{
-									"activity": "prepare dls traget foler",
+									"activity": "prepare dls traget folder",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -96,7 +96,114 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"enableStaging": false
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "ParquetSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "ParquetWriteSettings"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "orderblobstoragedataset",
+									"type": "DatasetReference",
+									"parameters": {
+										"containerName": {
+											"value": "@activity('prepare dls traget folder').output.containerName",
+											"type": "Expression"
+										},
+										"folder": {
+											"value": "@activity('prepare dls traget folder').output.path",
+											"type": "Expression"
+										},
+										"fileName": {
+											"value": "@activity('prepare dls traget folder').output.blobName",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "organizedorderdlsdataset",
+									"type": "DatasetReference",
+									"parameters": {
+										"fileSystemName": "organized-data",
+										"folder": {
+											"value": "@activity('prepare dls traget folder').output.targetOrganizedFullPath",
+											"type": "Expression"
+										},
+										"fileName": {
+											"value": "@activity('prepare dls traget folder').output.targetOrganizedFileName",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "update blob metadata",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "Copy blob storage to dls",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[dbo].[uspUpdateBlobMetadata]",
+								"storedProcedureParameters": {
+									"dlsLocation": {
+										"value": {
+											"value": "@concat(activity('prepare dls traget folder').output.targetOrganizedFullPath,'/',activity('prepare dls traget folder').output.targetOrganizedFileName)",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"recordId": {
+										"value": {
+											"value": "@item().RecordId",
+											"type": "Expression"
+										},
+										"type": "Int32"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "azuretrainingdatabase",
+								"type": "LinkedServiceReference"
 							}
 						}
 					]
