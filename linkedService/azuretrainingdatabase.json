@@ -1,0 +1,19 @@
+{
+	"name": "azuretrainingdatabase",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"connectionString": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=azuretrainingsev.database.windows.net;Initial Catalog=azuretraining;User ID=azuretraining",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "azuretrainingkeyvault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "sqlpassword"
+			}
+		}
+	}
+}
