@@ -1,0 +1,10 @@
+{
+	"name": "azuretrainingkeyvault",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://azuredataanalytics.vault.azure.net/"
+		}
+	}
+}
